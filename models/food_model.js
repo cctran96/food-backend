@@ -9,7 +9,8 @@ export const foodSchema = mongoose.Schema({
     nova_groups_tag: Array,
     grade: String,
     nutrient_levels: Map,
-    nutriments: Map
+    nutriments: Map,
+    image: String
 })
 
 const Food = mongoose.model("Food", foodSchema)

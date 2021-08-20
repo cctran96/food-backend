@@ -1,24 +1,31 @@
 import express from "express"
 import cors from "cors"
-import mongoose from "mongoose"
 import dotenv from "dotenv"
-import foods from "./routes/foods_routes"
+import mongoose from "mongoose"
+import foodsRouter from "./routes/foods.js"
+import usersRouter from "./routes/users.js"
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
-const CONNECTION_URL = process.env.QUCIKNOTE_DB_URL
-const PORT = process.env.PORT
+const URI = process.env.ATLAS_URI;
+mongoose.connect(URI, {useNewUrlParser: true, useUnifiedTopology: true});
+const connection = mongoose.connection;
 
-mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
-.catch(e => console.log(e.message))
+connection.once('open', () => {
+    console.log("MongoDB database connection established successfully.")
+})
 
-app.use("/foods", foods)
-app.use("/", (req, res) => res.status(200).json({ message: "Hello World!" }))
+app.use("/foods", foodsRouter)
+app.use("/users", usersRouter)
 
-export default app
+app.listen(PORT, () => {
+    console.log(`Server is running on port: ${PORT}`)
+})
+
+
