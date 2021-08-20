@@ -9,8 +9,8 @@ router.route('/').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('add').post((req, res) => {
-    const id = req.body.id;
+router.route('/').post((req, res) => {
+    const _id = req.body.id;
     const product_name = req.body.product_name;
     const quantity = req.body.quantity;
     const ingredients = req.body.ingredients;
@@ -22,7 +22,7 @@ router.route('add').post((req, res) => {
     const image = req.body.image;
 
     const newFood = new Food({
-        id,
+        _id,
         product_name,
         quantity,
         ingredients,
@@ -33,8 +33,21 @@ router.route('add').post((req, res) => {
         nutriments,
         image
     })
+
     newFood.save()
     .then(() => res.json("Food added!"))
+    .catch(err => res.status(400).json("Error: " + err))
+})
+
+router.route('/:id').get((req, res) => {
+    Food.findById(req.params.id)
+    .then(food => res.json(food))
+    .catch(err => res.status(400).json("Error: " + err))
+})
+
+router.route('/:id').delete((req, res) => {
+    Food.findByIdAndDelete(req.params.id)
+    .then(() => res.json("Food deleted"))
     .catch(err => res.status(400).json("Error: " + err))
 })
 
